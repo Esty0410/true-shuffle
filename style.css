@@ -1,0 +1,31 @@
+:root {
+    --bg-primary: #f2f2f2;
+    --bg-secondary: #ffffff;
+    --accent: #f5c400;
+    --text-primary: #1a1a1a;
+    --text-secondary: #6b6b6b;
+}
+
+[data-theme="dark"] {
+    --bg-primary: #121212;
+    --bg-secondary: #1e1e1e;
+    --accent: #ffe033;
+    --text-primary: #ffffff;
+    --text-secondary: #aaaaaa;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}

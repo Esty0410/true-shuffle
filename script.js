@@ -1,6 +1,6 @@
 const CLIENT_ID = 'bda16eba344f499ea1c7df19e8483a19';
 const REDIRECT_URI = 'http://127.0.0.1:5500/index.html';
-const SCOPES = 'streaming user-read-playback-state user-modify-playback-state playlist-read-private';
+const SCOPES = 'playlist-read-private playlist-read-collaborative user-library-read';
 
 function generateCodeVerifier() {
     const array = new Uint8Array(32);
@@ -27,7 +27,7 @@ async function loginWithSpotify() {
 
     localStorage.setItem('code_verifier', verifier);
 
-    const authUrl = `https://accounts.spotify.com/authorize?client_id=${CLIENT_ID}&response_type=code&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&scope=${encodeURIComponent(SCOPES)}&code_challenge_method=S256&code_challenge=${challenge}`;
+    const authUrl = `https://accounts.spotify.com/authorize?client_id=${CLIENT_ID}&response_type=code&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&scope=${encodeURIComponent(SCOPES)}&code_challenge_method=S256&code_challenge=${challenge}&show_dialog=true`;
 
     window.location.href = authUrl;
 }
@@ -96,6 +96,44 @@ function displayPlaylists(playlists) {
         li.addEventListener('click', () => selectPlaylist(playlist.id));
         queueList.appendChild(li);
     });
+}
+
+function trueShuffle(tracks) {
+    const shuffled = [...tracks];
+
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+
+    return shuffled;
+}
+
+function displayQueue(tracks) {
+    const queueList = document.getElementById('queueList');
+    queueList.innerHTML = '';
+
+    tracks.forEach((trackItem, index) => {
+        const li = document.createElement('li');
+        li.className = 'queue-item';
+        li.textContent = `${index + 1}. ${trackItem.item.name} - ${trackItem.item.artists[0].name}`;
+        queueList.appendChild(li);
+    });
+}
+
+async function selectPlaylist(playlistId) {
+    const token = localStorage.getItem('access_token');
+
+    const response = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}`, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    const data = await response.json();
+    const tracks = data.items.items;
+    const shuffledTracks = trueShuffle(tracks);
+    displayQueue(shuffledTracks);
 }
 
 const themeToggle = document.querySelector('.theme-toggle');

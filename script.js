@@ -39,6 +39,11 @@ async function handleCallback() {
     if (code) {
         const verifier = localStorage.getItem('code_verifier');
         await exchangeToken(code, verifier);
+    } else {
+        const token = localStorage.getItem('access_token');
+        if (token) {
+            await fetchPlaylists();
+        }
     }
 }
 
@@ -64,6 +69,33 @@ async function exchangeToken(code, verifier) {
         localStorage.setItem('access_token', data.access_token);
         window.location.href = '/';
     }
+}
+
+async function fetchPlaylists() {
+    const token = localStorage.getItem('access_token');
+
+    const response = await fetch('https://api.spotify.com/v1/me/playlists', {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    const data = await response.json();
+    console.log(data);
+    console.log(data.items);
+    displayPlaylists(data.items);
+}
+
+function displayPlaylists(playlists) {
+    const queueList = document.getElementById('queueList');
+    queueList.innerHTML = '';
+
+    playlists.forEach(playlist => {
+        const li = document.createElement('li');
+        li.textContent = playlist.name;
+        li.addEventListener('click', () => selectPlaylist(playlist.id));
+        queueList.appendChild(li);
+    });
 }
 
 const themeToggle = document.querySelector('.theme-toggle');

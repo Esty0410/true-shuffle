@@ -70,6 +70,10 @@ body {
     transition: transform 0.3s ease;
 }
 
+[data-theme="dark"] .toggle-thumb {
+    transform: translateX(20px);
+}
+
 .screen {
     display: flex;
     flex-direction: column;

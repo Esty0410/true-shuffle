@@ -117,8 +117,18 @@ function displayQueue(tracks) {
         const li = document.createElement('li');
         li.className = 'queue-item';
         li.textContent = `${index + 1}. ${trackItem.item.name} - ${trackItem.item.artists[0].name}`;
+        li.addEventListener('click', () => playSong(trackItem.item));
         queueList.appendChild(li);
     });
+}
+
+function playSong(track) {
+    document.getElementById('songTitle').textContent = track.name;
+    document.getElementById('songArtist').textContent = track.artists[0].name;
+
+    if (track.album.images.length > 0) {
+        document.getElementById('albumArt').src = track.album.images[0].url;
+    }
 }
 
 async function selectPlaylist(playlistId) {

@@ -3,6 +3,20 @@ const REDIRECT_URI = 'http://127.0.0.1:5500/index.html';
 const SCOPES = 'playlist-read-private playlist-read-collaborative user-library-read user-modify-playback-state user-read-playback-state';
 let activeDeviceId = null;
 
+async function getDevices() {
+    const token = localStorage.getItem('access_token');
+    const response = await fetch('https://api.spotify.com/v1/me/player/devices', {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+    const data = await response.json();
+    const activeDevice = data.devices.find(device => device.is_active);
+    if (activeDevice) {
+        activeDeviceId = activeDevice.id;
+    }
+}
+
 function generateCodeVerifier() {
     const array = new Uint8Array(32);
     window.crypto.getRandomValues(array);
@@ -65,7 +79,6 @@ async function exchangeToken(code, verifier) {
     });
 
     const data = await response.json();
-    console.log(data);
 
     if (data.access_token) {
         localStorage.setItem('access_token', data.access_token);
@@ -83,8 +96,6 @@ async function fetchPlaylists() {
     });
 
     const data = await response.json();
-    console.log(data);
-    console.log(data.items);
     displayPlaylists(data.items);
 }
 
@@ -124,6 +135,21 @@ function displayQueue(tracks) {
     });
 }
 
+async function selectPlaylist(playlistId) {
+    const token = localStorage.getItem('access_token');
+
+    const response = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}`, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    const data = await response.json();
+    const tracks = data.items.items;
+    const shuffledTracks = trueShuffle(tracks);
+    displayQueue(shuffledTracks);
+}
+
 async function playSong(track) {
     document.getElementById('songTitle').textContent = track.name;
     document.getElementById('songArtist').textContent = track.artists[0].name;
@@ -144,21 +170,6 @@ async function playSong(track) {
             uris: [track.uri]
         })
     });
-}
-
-async function selectPlaylist(playlistId) {
-    const token = localStorage.getItem('access_token');
-
-    const response = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}`, {
-        headers: {
-            'Authorization': `Bearer ${token}`
-        }
-    });
-
-    const data = await response.json();
-    const tracks = data.items.items;
-    const shuffledTracks = trueShuffle(tracks);
-    displayQueue(shuffledTracks);
 }
 
 const themeToggle = document.querySelector('.theme-toggle');
@@ -208,18 +219,17 @@ playBtn.addEventListener('click', async () => {
     }
 });
 
-async function getDevices() {
+const nextBtn = document.getElementById('nextBtn');
+
+nextBtn.addEventListener('click', async () => {
     const token = localStorage.getItem('access_token');
-    const response = await fetch('https://api.spotify.com/v1/me/player/devices', {
+
+    await fetch('https://api.spotify.com/v1/me/player/next', {
+        method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`
         }
     });
-    const data = await response.json();
-    const activeDevice = data.devices.find(device => device.is_active);
-    if (activeDevice) {
-        activeDeviceId = activeDevice.id;
-    }
-}
+});
 
 handleCallback();

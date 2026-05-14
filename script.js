@@ -1,7 +1,6 @@
 const CLIENT_ID = 'bda16eba344f499ea1c7df19e8483a19';
 const REDIRECT_URI = 'http://127.0.0.1:5500/index.html';
-const SCOPES = 'playlist-read-private playlist-read-collaborative user-library-read';
-
+const SCOPES = 'playlist-read-private playlist-read-collaborative user-library-read user-modify-playback-state user-read-playback-state';
 function generateCodeVerifier() {
     const array = new Uint8Array(32);
     window.crypto.getRandomValues(array);
@@ -122,13 +121,26 @@ function displayQueue(tracks) {
     });
 }
 
-function playSong(track) {
+async function playSong(track) {
     document.getElementById('songTitle').textContent = track.name;
     document.getElementById('songArtist').textContent = track.artists[0].name;
 
     if (track.album.images.length > 0) {
         document.getElementById('albumArt').src = track.album.images[0].url;
     }
+
+    const token = localStorage.getItem('access_token');
+
+    await fetch('https://api.spotify.com/v1/me/player/play', {
+        method: 'PUT',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            uris: [track.uri]
+        })
+    });
 }
 
 async function selectPlaylist(playlistId) {

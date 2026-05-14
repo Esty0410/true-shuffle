@@ -1,6 +1,8 @@
 const CLIENT_ID = 'bda16eba344f499ea1c7df19e8483a19';
 const REDIRECT_URI = 'http://127.0.0.1:5500/index.html';
 const SCOPES = 'playlist-read-private playlist-read-collaborative user-library-read user-modify-playback-state user-read-playback-state';
+let activeDeviceId = null;
+
 function generateCodeVerifier() {
     const array = new Uint8Array(32);
     window.crypto.getRandomValues(array);
@@ -42,6 +44,7 @@ async function handleCallback() {
         const token = localStorage.getItem('access_token');
         if (token) {
             await fetchPlaylists();
+            await getDevices();
         }
     }
 }
@@ -162,18 +165,61 @@ const themeToggle = document.querySelector('.theme-toggle');
 const body = document.querySelector('body');
 
 themeToggle.addEventListener('click', () => {
-    themeToggle.addEventListener('click', () => {
-        if (body.getAttribute('data-theme') === 'dark') {
-            body.removeAttribute('data-theme');
-        } else {
-            body.setAttribute('data-theme', 'dark');
-        }
-    });
+    if (body.getAttribute('data-theme') === 'dark') {
+        body.removeAttribute('data-theme');
+    } else {
+        body.setAttribute('data-theme', 'dark');
+    }
 });
 
 const connectBtn = document.getElementById('connectBtn');
 connectBtn.addEventListener('click', () => {
     loginWithSpotify();
 });
+
+const playBtn = document.getElementById('playBtn');
+let isPlaying = false;
+
+playBtn.addEventListener('click', async () => {
+    const token = localStorage.getItem('access_token');
+
+    if (isPlaying) {
+        await fetch('https://api.spotify.com/v1/me/player/pause', {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        isPlaying = false;
+        playBtn.innerHTML = '<i class="fas fa-play"></i>';
+    } else {
+        await fetch('https://api.spotify.com/v1/me/player/play', {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                device_id: activeDeviceId
+            })
+        });
+        isPlaying = true;
+        playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+    }
+});
+
+async function getDevices() {
+    const token = localStorage.getItem('access_token');
+    const response = await fetch('https://api.spotify.com/v1/me/player/devices', {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+    const data = await response.json();
+    const activeDevice = data.devices.find(device => device.is_active);
+    if (activeDevice) {
+        activeDeviceId = activeDevice.id;
+    }
+}
 
 handleCallback();

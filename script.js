@@ -2,6 +2,8 @@ const CLIENT_ID = 'bda16eba344f499ea1c7df19e8483a19';
 const REDIRECT_URI = 'http://127.0.0.1:5500/index.html';
 const SCOPES = 'playlist-read-private playlist-read-collaborative user-library-read user-modify-playback-state user-read-playback-state';
 let activeDeviceId = null;
+let currentQueue = [];
+let currentTrackIndex = 0;
 
 async function getDevices() {
     const token = localStorage.getItem('access_token');
@@ -14,6 +16,17 @@ async function getDevices() {
     const activeDevice = data.devices.find(device => device.is_active);
     if (activeDevice) {
         activeDeviceId = activeDevice.id;
+        await fetch('https://api.spotify.com/v1/me/player', {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                device_ids: [activeDevice.id],
+                play: false
+            })
+        });
     }
 }
 
@@ -126,6 +139,8 @@ function displayQueue(tracks) {
     const queueList = document.getElementById('queueList');
     queueList.innerHTML = '';
 
+    currentQueue = tracks;
+
     tracks.forEach((trackItem, index) => {
         const li = document.createElement('li');
         li.className = 'queue-item';
@@ -151,6 +166,9 @@ async function selectPlaylist(playlistId) {
 }
 
 async function playSong(track) {
+
+    currentTrackIndex = currentQueue.findIndex(item => item.item.uri === track.uri);
+
     document.getElementById('songTitle').textContent = track.name;
     document.getElementById('songArtist').textContent = track.artists[0].name;
 
@@ -170,6 +188,9 @@ async function playSong(track) {
             uris: [track.uri]
         })
     });
+
+    isPlaying = true;
+    document.getElementById('playBtn').innerHTML = '<i class="fa-solid fa-pause"></i>';
 }
 
 const themeToggle = document.querySelector('.theme-toggle');
@@ -222,14 +243,21 @@ playBtn.addEventListener('click', async () => {
 const nextBtn = document.getElementById('nextBtn');
 
 nextBtn.addEventListener('click', async () => {
-    const token = localStorage.getItem('access_token');
+    if (currentQueue.length === 0) return;
 
-    await fetch('https://api.spotify.com/v1/me/player/next', {
-        method: 'POST',
-        headers: {
-            'Authorization': `Bearer ${token}`
-        }
-    });
+    currentTrackIndex = (currentTrackIndex + 1) % currentQueue.length;
+    const nextTrack = currentQueue[currentTrackIndex].item;
+    await playSong(nextTrack);
+});
+
+const prevBtn = document.getElementById('prevBtn');
+
+prevBtn.addEventListener('click', async () => {
+    if (currentQueue.length === 0) return;
+
+    currentTrackIndex = (currentTrackIndex - 1 + currentQueue.length) % currentQueue.length;
+    const prevTrack = currentQueue[currentTrackIndex].item;
+    await playSong(prevTrack);
 });
 
 handleCallback();

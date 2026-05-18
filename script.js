@@ -9,6 +9,7 @@ let isSeeking = false;
 let currentDuration = 0;
 let isDragging = false;
 let draggedIndex = null;
+let isAutoAdvancing = false;
 
 setTimeout(() => {
     document.getElementById('intro').classList.add('intro-hidden');
@@ -113,7 +114,7 @@ async function exchangeToken(code, verifier) {
 
     if (data.access_token) {
         localStorage.setItem('access_token', data.access_token);
-        window.location.href = '/';
+        window.location.href = '/index.html';
     }
 }
 
@@ -127,6 +128,7 @@ async function fetchPlaylists() {
     });
 
     const data = await response.json();
+    displayPlaylists(data.items);
 }
 
 function displayPlaylists(playlists) {
@@ -137,7 +139,7 @@ function displayPlaylists(playlists) {
 
     playlists.forEach(playlist => {
         const li = document.createElement('li');
-        li.className = 'queue-item';
+        li.className = 'playlist-item';
         li.innerHTML = `<span>${playlist.name}</span>`;
         li.addEventListener('click', () => selectPlaylist(playlist.id));
         queueList.appendChild(li);
@@ -256,6 +258,18 @@ async function updateProgressBar() {
 
         document.getElementById('currentTime').textContent = formatTime(data.progress_ms);
         document.getElementById('totalTime').textContent = formatTime(data.item.duration_ms);
+
+        if (data.progress_ms >= data.item.duration_ms - 2000 && !isAutoAdvancing) {
+            isAutoAdvancing = true;
+            const nextIndex = currentTrackIndex + 1;
+            if (nextIndex >= currentQueue.length) {
+                isAutoAdvancing = false;
+                return;
+            }
+            currentTrackIndex = nextIndex;
+            await playSong(currentQueue[currentTrackIndex].item);
+            isAutoAdvancing = false;
+        }
     }
 }
 

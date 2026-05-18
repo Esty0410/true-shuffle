@@ -23,7 +23,8 @@
 body {
     background-color: var(--bg-primary);
     color: var(--text-primary);
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 600;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -33,8 +34,12 @@ body {
 .ipod {
     background-color: var(--bg-secondary);
     width: 360px;
+    min-height: auto;
     border-radius: 40px;
-    padding: 32px 24px
+    padding: 32px 24px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
 }
 
 .topbar {
@@ -282,6 +287,35 @@ body {
     background-color: var(--bg-primary);
     cursor: pointer;
     user-select: none;
+}
+
+.playlist-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background-color: var(--bg-primary);
+    cursor: pointer;
+    user-select: none;
+}
+
+.playlist-item::after {
+    content: '\f054';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    color: var(--text-secondary);
+    font-size: 11px;
+}
+
+.playlist-item:hover {
+    background-color: var(--accent);
+    color: #1a1a1a;
+}
+
+.queue-item:hover {
+    background-color: var(--accent);
+    color: #1a1a1a;
 }
 
 .queue-item .drag-handle {

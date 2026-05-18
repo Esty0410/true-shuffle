@@ -4,6 +4,10 @@ const SCOPES = 'playlist-read-private playlist-read-collaborative user-library-r
 let activeDeviceId = null;
 let currentQueue = [];
 let currentTrackIndex = 0;
+let progressInterval = null;
+let isSeeking = false;
+let currentDuration = 0;
+let isDragging = false;
 
 async function getDevices() {
     const token = localStorage.getItem('access_token');
@@ -178,6 +182,8 @@ async function playSong(track) {
 
     const token = localStorage.getItem('access_token');
 
+    await getDevices();
+
     await fetch('https://api.spotify.com/v1/me/player/play', {
         method: 'PUT',
         headers: {
@@ -191,6 +197,105 @@ async function playSong(track) {
 
     isPlaying = true;
     document.getElementById('playBtn').innerHTML = '<i class="fa-solid fa-pause"></i>';
+
+    clearInterval(progressInterval);
+    progressInterval = setInterval(updateProgressBar, 1000);
+}
+
+async function updateProgressBar() {
+    if (isSeeking) return;
+
+    const token = localStorage.getItem('access_token');
+
+    const response = await fetch('https://api.spotify.com/v1/me/player', {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    if (!response.ok || response.status === 204) return;
+
+    const data = await response.json();
+
+    if (data && data.progress_ms && data.item) {
+        currentDuration = data.item.duration_ms;
+        const progress = (data.progress_ms / data.item.duration_ms) * 100;
+        document.getElementById('progressFill').style.width = `${progress}%`;
+
+        document.getElementById('currentTime').textContent = formatTime(data.progress_ms);
+        document.getElementById('totalTime').textContent = formatTime(data.item.duration_ms);
+    }
+}
+
+function formatTime(ms) {
+    const seconds = Math.floor(ms / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+}
+
+function setupSeekBar() {
+    const progressBar = document.getElementById('progressBar');
+
+    progressBar.addEventListener('click', async (e) => {
+        isSeeking = true;
+
+        const rect = progressBar.getBoundingClientRect();
+        const clickX = e.clientX - rect.left;
+        const percentage = clickX / rect.width;
+        document.getElementById('progressFill').style.width = `${percentage * 100}%`;
+
+        const token = localStorage.getItem('access_token');
+        const response = await fetch('https://api.spotify.com/v1/me/player', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await response.json();
+
+        if (data.item) {
+            const seekMs = Math.floor(percentage * data.item.duration_ms);
+            await fetch(`https://api.spotify.com/v1/me/player/seek?position_ms=${seekMs}&device_id=${activeDeviceId}`, {
+                method: 'PUT',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+        }
+
+        setTimeout(() => {
+            isSeeking = false;
+        }, 500);
+    });
+
+    progressBar.addEventListener('mousedown', () => {
+        isDragging = true;
+        isSeeking = true;
+    });
+
+    progressBar.addEventListener('mousemove', async (e) => {
+        console.log('mousemove fired, isDragging:', isDragging);
+        if (!isDragging) return;
+
+        const rect = progressBar.getBoundingClientRect();
+        const clickX = Math.max(0, Math.min(e.clientX - rect.left, rect.width));
+        const percentage = clickX / rect.width;
+        document.getElementById('progressFill').style.width = `${percentage * 100}%`;
+        document.getElementById('currentTime').textContent = formatTime(percentage * currentDuration);
+    });
+
+    document.addEventListener('mouseup', async (e) => {
+        if (!isDragging) return;
+        isDragging = false;
+
+        const rect = progressBar.getBoundingClientRect();
+        const clickX = Math.max(0, Math.min(e.clientX - rect.left, rect.width));
+        const percentage = clickX / rect.width;
+
+        const token = localStorage.getItem('access_token');
+        await fetch(`https://api.spotify.com/v1/me/player/seek?position_ms=${Math.floor(percentage * currentDuration)}&device_id=${activeDeviceId}`, {
+            method: 'PUT',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        setTimeout(() => { isSeeking = false; }, 500);
+    });
 }
 
 const themeToggle = document.querySelector('.theme-toggle');
@@ -260,4 +365,5 @@ prevBtn.addEventListener('click', async () => {
     await playSong(prevTrack);
 });
 
+setupSeekBar();
 handleCallback();

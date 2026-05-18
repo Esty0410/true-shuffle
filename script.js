@@ -269,8 +269,7 @@ function setupSeekBar() {
         isSeeking = true;
     });
 
-    progressBar.addEventListener('mousemove', async (e) => {
-        console.log('mousemove fired, isDragging:', isDragging);
+    document.addEventListener('mousemove', (e) => {
         if (!isDragging) return;
 
         const rect = progressBar.getBoundingClientRect();

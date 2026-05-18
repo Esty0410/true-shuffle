@@ -261,3 +261,13 @@ body {
     pointer-events: none;
     transition: opacity 0.5s ease;
 }
+
+.screen-playlists,
+.screen-queue,
+.screen-nowplaying {
+    display: none;
+}
+
+.screen-active {
+    display: block;
+}

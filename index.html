@@ -13,60 +13,74 @@
         </div>
         <div class="ipod">
             <div class="topbar">
-                <h1>Eque</h1>
+                <h1>eque</h1>
                 <div class="theme-toggle">
                     <div class="toggle-track">
                         <div class="toggle-thumb"></div>
                     </div>
                 </div>
             </div>
+            <div class="screen-playlists" id="screenPlaylists">
+                <div class="queue">
+                    <ul id="queueList">
+                        <li class="queue-empty">no songs in queue</li>
+                    </ul>
+                </div>
+                <div class="spotify-connect">
+                    <button class="btn-spotify" id="connectBtn">
+                        <i class="fa-brands fa-spotify"></i>
+                        connect to spotify
+                    </button>
+                </div>
+            </div>
+            <div class="screen-queue" id="screenQueue">
+                <button class="btn-back" id="backToPlaylists">
+                    <i class="fa-solid fa-chevron-left"></i> playlists
+                </button>
+                <h2>up next</h2>
+                <ul id="songList">
 
-            <div class="screen">
-                <div class="album-art">
-                    <img src="placeholder.jpg" alt="Album art" id="albumArt">
-                </div>
-                <div class="song-info">
-                    <p class="song-title" id="songTitle">No song playing</p>
-                    <p class="song-artist" id="songArtist">Add song to get started</p>
-                </div>
-            </div>
-            <div class="progress-container">
-                <span id="currentTime">0:00</span>
-                <div class="progress-bar" id="progressBar">
-                    <div class="progress-fill" id="progressFill">
-                        <div class="progress-thumb"></div>
-                    </div>
-                </div>
-                <span id="totalTime">0:00</span>
-            </div>
-            <div class="controls">
-                <button class="btn-control" id="prevBtn">
-                    <i class="fa-solid fa-backward-step"></i>
-                </button>
-                <button class="btn-control" id="shuffleBtn">
-                    <i class="fa-solid fa-shuffle"></i>
-                </button>
-                <button class="btn-control btn-play" id="playBtn">
-                    <i class="fa-solid fa-play"></i>
-                </button>
-                <button class="btn-control" id="repeatBtn">
-                    <i class="fa-solid fa-repeat"></i>
-                </button>
-                <button class="btn-control" id="nextBtn">
-                    <i class="fa-solid fa-forward-step"></i>
-                </button>
-            </div>
-            <div class="queue">
-                <h2>Up Next</h2>
-                <ul id="queueList">
-                    <li class="queue-empty">No songs in queue</li>
                 </ul>
             </div>
-            <div class="spotify-connect">
-                <button class="btn-spotify" id="connectBtn">
-                    <i class="fa-brands fa-spotify"></i>
-                    Connect to Spotify
+            <div class="screen-nowplaying" id="screenNowPlaying">
+                <button class="btn-back" id="backToQueue">
+                    <i class="fa-solid fa-chevron-left"></i> queue
                 </button>
+                <div class="screen">
+                    <div class="album-art">
+                        <img src="placeholder.jpg" alt="Album art" id="albumArt">
+                    </div>
+                    <div class="song-info">
+                        <p class="song-title" id="songTitle">no song playing</p>
+                        <p class="song-artist" id="songArtist">add song to get started</p>
+                    </div>
+                </div>
+                <div class="progress-container">
+                    <span id="currentTime">0:00</span>
+                    <div class="progress-bar" id="progressBar">
+                        <div class="progress-fill" id="progressFill">
+                            <div class="progress-thumb"></div>
+                        </div>
+                    </div>
+                    <span id="totalTime">0:00</span>
+                </div>
+                <div class="controls">
+                    <button class="btn-control" id="prevBtn">
+                        <i class="fa-solid fa-backward-step"></i>
+                    </button>
+                    <button class="btn-control" id="shuffleBtn">
+                        <i class="fa-solid fa-shuffle"></i>
+                    </button>
+                    <button class="btn-control btn-play" id="playBtn">
+                        <i class="fa-solid fa-play"></i>
+                    </button>
+                    <button class="btn-control" id="repeatBtn">
+                        <i class="fa-solid fa-repeat"></i>
+                    </button>
+                    <button class="btn-control" id="nextBtn">
+                        <i class="fa-solid fa-forward-step"></i>
+                    </button>
+                </div>
             </div>
         </div>
         <script src="script.js"></script>

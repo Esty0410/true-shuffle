@@ -69,6 +69,12 @@ async function loginWithSpotify() {
     window.location.href = authUrl;
 }
 
+function showScreen(screenId) {
+    document.querySelectorAll('.screen-playlists, .screen-queue, .screen-nowplaying')
+        .forEach(screen => screen.classList.remove('screen-active'));
+    document.getElementById(screenId).classList.add('screen-active');
+}
+
 async function handleCallback() {
     const urlParams = new URLSearchParams(window.location.search);
     const code = urlParams.get('code');
@@ -81,6 +87,9 @@ async function handleCallback() {
         if (token) {
             await fetchPlaylists();
             await getDevices();
+            showScreen('screenPlaylists');
+        } else {
+            showScreen('screenPlaylists');
         }
     }
 }
@@ -122,6 +131,8 @@ async function fetchPlaylists() {
 }
 
 function displayPlaylists(playlists) {
+    showScreen('screenPlaylists');
+    document.getElementById('connectBtn').style.display = 'none';
     const queueList = document.getElementById('queueList');
     queueList.innerHTML = '';
 
@@ -145,7 +156,8 @@ function trueShuffle(tracks) {
 }
 
 function displayQueue(tracks) {
-    const queueList = document.getElementById('queueList');
+    showScreen('screenQueue');
+    const queueList = document.getElementById('songList');
     queueList.innerHTML = '';
 
     currentQueue = tracks;
@@ -187,6 +199,7 @@ async function selectPlaylist(playlistId) {
 }
 
 async function playSong(track) {
+    showScreen('screenNowPlaying');
 
     currentTrackIndex = currentQueue.findIndex(item => item.item.uri === track.uri);
 
@@ -250,6 +263,14 @@ function formatTime(ms) {
     const remainingSeconds = seconds % 60;
     return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
 }
+
+document.getElementById('backToPlaylists').addEventListener('click', () => {
+    showScreen('screenPlaylists');
+});
+
+document.getElementById('backToQueue').addEventListener('click', () => {
+    showScreen('screenQueue');
+});
 
 function setupSeekBar() {
     const progressBar = document.getElementById('progressBar');

@@ -37,7 +37,12 @@
                 <button class="btn-back" id="backToPlaylists">
                     <i class="fa-solid fa-chevron-left"></i> playlists
                 </button>
-                <h2>up next</h2>
+                <div class="queue-header">
+                    <h2>up next</h2>
+                    <button class="btn-control" id="shuffleQueueBtn">
+                        <i class="fa-solid fa-shuffle"></i>
+                    </button>
+                </div>
                 <ul id="songList">
 
                 </ul>
@@ -68,14 +73,8 @@
                     <button class="btn-control" id="prevBtn">
                         <i class="fa-solid fa-backward-step"></i>
                     </button>
-                    <button class="btn-control" id="shuffleBtn">
-                        <i class="fa-solid fa-shuffle"></i>
-                    </button>
                     <button class="btn-control btn-play" id="playBtn">
                         <i class="fa-solid fa-play"></i>
-                    </button>
-                    <button class="btn-control" id="repeatBtn">
-                        <i class="fa-solid fa-repeat"></i>
                     </button>
                     <button class="btn-control" id="nextBtn">
                         <i class="fa-solid fa-forward-step"></i>

@@ -194,8 +194,7 @@ async function selectPlaylist(playlistId) {
 
     const data = await response.json();
     const tracks = data.items.items;
-    const shuffledTracks = trueShuffle(tracks);
-    displayQueue(shuffledTracks);
+    displayQueue(tracks);
 }
 
 async function playSong(track) {
@@ -270,6 +269,11 @@ document.getElementById('backToPlaylists').addEventListener('click', () => {
 
 document.getElementById('backToQueue').addEventListener('click', () => {
     showScreen('screenQueue');
+});
+
+document.getElementById('shuffleQueueBtn').addEventListener('click', () => {
+    currentQueue = trueShuffle(currentQueue);
+    displayQueue(currentQueue);
 });
 
 function setupSeekBar() {

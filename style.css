@@ -200,7 +200,7 @@ body {
     list-style: none;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
 }
 
 .queue-empty {
@@ -271,4 +271,27 @@ body {
 
 .screen-active {
     display: block;
+}
+
+.queue-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background-color: var(--bg-primary);
+    cursor: pointer;
+    user-select: none;
+}
+
+.queue-item .drag-handle {
+    color: var(--text-secondary);
+    font-size: 12px;
+}
+
+#songList {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
 }

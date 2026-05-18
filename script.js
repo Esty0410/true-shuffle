@@ -127,7 +127,6 @@ async function fetchPlaylists() {
     });
 
     const data = await response.json();
-    displayPlaylists(data.items);
 }
 
 function displayPlaylists(playlists) {
@@ -138,7 +137,8 @@ function displayPlaylists(playlists) {
 
     playlists.forEach(playlist => {
         const li = document.createElement('li');
-        li.textContent = playlist.name;
+        li.className = 'queue-item';
+        li.innerHTML = `<span>${playlist.name}</span>`;
         li.addEventListener('click', () => selectPlaylist(playlist.id));
         queueList.appendChild(li);
     });
@@ -165,7 +165,10 @@ function displayQueue(tracks) {
     tracks.forEach((trackItem, index) => {
         const li = document.createElement('li');
         li.className = 'queue-item';
-        li.textContent = `${index + 1}. ${trackItem.item.name} - ${trackItem.item.artists[0].name}`;
+        li.innerHTML = `
+            <span>${index + 1}. ${trackItem.item.name} - ${trackItem.item.artists[0].name}</span>
+            <i class="fa-solid fa-grip-lines drag-handle"></i>
+        `; 
         li.addEventListener('click', () => playSong(trackItem.item));
         li.draggable = true;
         li.addEventListener('dragstart', () => {
@@ -269,6 +272,10 @@ document.getElementById('backToPlaylists').addEventListener('click', () => {
 
 document.getElementById('backToQueue').addEventListener('click', () => {
     showScreen('screenQueue');
+});
+
+document.getElementById('goToNowPlaying').addEventListener('click', () => {
+    showScreen('screenNowPlaying');
 });
 
 document.getElementById('shuffleQueueBtn').addEventListener('click', () => {

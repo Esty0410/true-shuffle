@@ -8,6 +8,7 @@ let progressInterval = null;
 let isSeeking = false;
 let currentDuration = 0;
 let isDragging = false;
+let draggedIndex = null;
 
 async function getDevices() {
     const token = localStorage.getItem('access_token');
@@ -150,6 +151,18 @@ function displayQueue(tracks) {
         li.className = 'queue-item';
         li.textContent = `${index + 1}. ${trackItem.item.name} - ${trackItem.item.artists[0].name}`;
         li.addEventListener('click', () => playSong(trackItem.item));
+        li.draggable = true;
+        li.addEventListener('dragstart', () => {
+            draggedIndex = index;
+        });
+        li.addEventListener('dragover', (e) => {
+            e.preventDefault();
+        });
+        li.addEventListener('drop', () => {
+            const draggedTrack = currentQueue.splice(draggedIndex, 1)[0];
+            currentQueue.splice(index, 0, draggedTrack);
+            displayQueue(currentQueue);
+        });
         queueList.appendChild(li);
     });
 }

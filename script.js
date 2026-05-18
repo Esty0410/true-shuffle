@@ -10,6 +10,10 @@ let currentDuration = 0;
 let isDragging = false;
 let draggedIndex = null;
 
+setTimeout(() => {
+    document.getElementById('intro').classList.add('intro-hidden');
+}, 2000);
+
 async function getDevices() {
     const token = localStorage.getItem('access_token');
     const response = await fetch('https://api.spotify.com/v1/me/player/devices', {

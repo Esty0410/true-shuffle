@@ -202,12 +202,34 @@ async function selectPlaylist(playlistId) {
     displayQueue(tracks);
 }
 
+function updatePlayButtons(playing) {
+    const icon = playing ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play"></i>';
+    document.getElementById('playBtn').innerHTML = icon;
+    document.getElementById('miniPlayBtn').innerHTML = icon;
+    document.getElementById('miniPlayBtn2').innerHTML = icon;
+}
+
 async function playSong(track) {
     showScreen('screenNowPlaying');
 
     currentTrackIndex = currentQueue.findIndex(item => item.item.uri === track.uri);
 
     document.getElementById('songTitle').textContent = track.name;
+    const miniTitle = document.getElementById('miniTitle');
+    const miniTitle2 = document.getElementById('miniTitle2');
+    if (miniTitle) {
+        miniTitle.textContent = `${track.name} - ${track.artists[0].name}`;
+        miniTitle.classList.add('scrolling');
+    }
+    if (miniTitle2) {
+        miniTitle2.textContent = `${track.name} - ${track.artists[0].name}`;
+        miniTitle2.classList.add('scrolling');
+    }
+
+    document.getElementById('miniPlayer').style.display = 'flex';
+    document.getElementById('miniPlayer2').style.display = 'flex';
+    updatePlayButtons(true);
+
     document.getElementById('songArtist').textContent = track.artists[0].name;
 
     if (track.album.images.length > 0) {
@@ -232,7 +254,7 @@ async function playSong(track) {
     });
 
     isPlaying = true;
-    document.getElementById('playBtn').innerHTML = '<i class="fa-solid fa-pause"></i>';
+    updatePlayButtons(true);
 
     clearInterval(progressInterval);
     progressInterval = setInterval(updateProgressBar, 1000);
@@ -392,7 +414,7 @@ playBtn.addEventListener('click', async () => {
             }
         });
         isPlaying = false;
-        playBtn.innerHTML = '<i class="fas fa-play"></i>';
+        updatePlayButtons(false);
     } else {
         await fetch('https://api.spotify.com/v1/me/player/play', {
             method: 'PUT',
@@ -405,7 +427,7 @@ playBtn.addEventListener('click', async () => {
             })
         });
         isPlaying = true;
-        playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+        updatePlayButtons(true);
     }
 });
 
@@ -427,6 +449,48 @@ prevBtn.addEventListener('click', async () => {
     currentTrackIndex = (currentTrackIndex - 1 + currentQueue.length) % currentQueue.length;
     const prevTrack = currentQueue[currentTrackIndex].item;
     await playSong(prevTrack);
+});
+
+document.getElementById('miniPlayBtn').addEventListener('click', async () => {
+    const token = localStorage.getItem('access_token');
+
+    if(isPlaying) {
+        await fetch('https://api.spotify.com/v1/me/player/pause', {
+            method: 'PUT',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        isPlaying = false;
+        updatePlayButtons(false);
+    } else {
+        await fetch('https://api.spotify.com/v1/me/player/play', {
+            method: 'PUT',
+            headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ device_id: activeDeviceId })
+        });
+        isPlaying = true;
+        updatePlayButtons(true);
+    }
+});
+
+document.getElementById('miniPlayBtn2').addEventListener('click', async () => {
+    const token = localStorage.getItem('access_token');
+
+    if(isPlaying) {
+        await fetch('https://api.spotify.com/v1/me/player/pause', {
+            method: 'PUT',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        isPlaying = false;
+        updatePlayButtons(false);
+    } else {
+        await fetch('https://api.spotify.com/v1/me/player/play', {
+            method: 'PUT',
+            headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ device_id: activeDeviceId })
+        });
+        isPlaying = true;
+        updatePlayButtons(true);
+    }
 });
 
 setupSeekBar();

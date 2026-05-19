@@ -379,3 +379,38 @@ body {
     font-size: 64px;
     color: var(--text-secondary);
 }
+
+.mini-player {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--bg-primary);
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-bottom: 12px;
+}
+
+.mini-player-info {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+}
+
+.mini-player-info span {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    white-space: nowrap;
+    display: block;
+}
+
+@keyframes scroll {
+    0% { transform: translateX(0); }
+    20% { transform: translateX(0); }
+    80% { transform: translateX(-100%); }
+    100% { transform: translateX(-100%); }
+}
+
+.mini-player-info span.scrolling {
+    animation: scroll 6s linear infinite;
+}

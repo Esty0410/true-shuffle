@@ -35,12 +35,14 @@
                 </div>
             </div>
             <div class="screen-queue" id="screenQueue">
-                <button class="btn-back" id="backToPlaylists">
-                    <i class="fa-solid fa-chevron-left"></i> playlists
-                </button>
-                <button class="btn-back" id="goToNowPlaying">
-                    <i class="fa-solid fa-music"></i> Now Playing
-                </button>
+                <div class="screen-nav">
+                    <button class="btn-back" id="backToPlaylists">
+                        <i class="fa-solid fa-chevron-left"></i> menu
+                    </button>
+                    <button class="btn-back" id="goToNowPlaying">
+                        now playing  <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
                 <div class="queue-header">
                     <h2>up next</h2>
                     <button class="btn-control" id="shuffleQueueBtn">
@@ -53,15 +55,18 @@
             </div>
             <div class="screen-nowplaying" id="screenNowPlaying">
                 <button class="btn-back" id="backToQueue">
-                    <i class="fa-solid fa-chevron-left"></i> queue
+                    <i class="fa-solid fa-chevron-left"></i> menu
                 </button>
-                <div class="screen">
-                    <div class="album-art">
-                        <img src="placeholder.jpg" alt="Album art" id="albumArt">
-                    </div>
-                    <div class="song-info">
+                <div class="song-info">
                         <p class="song-title" id="songTitle">no song playing</p>
                         <p class="song-artist" id="songArtist">add song to get started</p>
+                </div>
+                <div class="screen">
+                    <div class="album-art" id="albumArtContainer">
+                        <img alt="Album art" id="albumArt" style="display:none">
+                        <div class="album-placeholder" id="albumPlaceholder">
+                            <i class="fa-solid fa-music"></i>
+                        </div>
                     </div>
                 </div>
                 <div class="progress-container">

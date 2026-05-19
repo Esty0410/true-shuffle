@@ -211,7 +211,9 @@ async function playSong(track) {
     document.getElementById('songArtist').textContent = track.artists[0].name;
 
     if (track.album.images.length > 0) {
-        document.getElementById('albumArt').src = track.album.images[0].url;
+    document.getElementById('albumArt').src = track.album.images[0].url;
+    document.getElementById('albumArt').style.display = 'block';
+    document.getElementById('albumPlaceholder').style.display = 'none';
     }
 
     const token = localStorage.getItem('access_token');

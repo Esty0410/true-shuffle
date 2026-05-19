@@ -87,8 +87,8 @@ body {
 }
 
 .album-art {
-    width: 200px;
-    height: 200px;
+    width: 280px;
+    height: 280px;
     border-radius: 20px;
     background-color: var(--bg-primary);
     margin-bottom: 16px;
@@ -268,14 +268,35 @@ body {
     transition: opacity 0.5s ease;
 }
 
+.screen-queue {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.queue-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
 .screen-playlists,
 .screen-queue,
 .screen-nowplaying {
     display: none;
 }
 
+.screen-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
 .screen-active {
-    display: block;
+    display: flex;
+    flex-direction: column;
 }
 
 .queue-item {
@@ -328,4 +349,33 @@ body {
     display: flex;
     flex-direction: column;
     gap: 6px;
+}
+
+.btn-back {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: none;
+    border: none;
+    color: var(--accent);
+    font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0;
+    margin-bottom: 16px;
+}
+
+.song-info {
+    margin-bottom: 16px;
+}
+
+.album-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 64px;
+    color: var(--text-secondary);
 }

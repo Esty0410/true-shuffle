@@ -242,7 +242,7 @@ async function playSong(track) {
 
     await getDevices();
 
-    await fetch('https://api.spotify.com/v1/me/player/play', {
+    const playResponse = await fetch('https://api.spotify.com/v1/me/player/play', {
         method: 'PUT',
         headers: {
             'Authorization': `Bearer ${token}`,
@@ -252,6 +252,11 @@ async function playSong(track) {
             uris: [track.uri]
         })
     });
+
+    if (playResponse.status === 403 || playResponse.status === 404) {
+        alert('please open spotify on your device first, then try again');
+        return;
+    }
 
     isPlaying = true;
     updatePlayButtons(true);
@@ -317,7 +322,11 @@ document.getElementById('goToNowPlaying').addEventListener('click', () => {
 });
 
 document.getElementById('shuffleQueueBtn').addEventListener('click', () => {
+    const currentTrack = currentQueue[currentTrackIndex];
     currentQueue = trueShuffle(currentQueue);
+    if (currentQueue) {
+        currentTrackIndex = currentQueue.findIndex(item => item.item.uri === currentTrack.item.uri);
+    }
     displayQueue(currentQueue);
 });
 

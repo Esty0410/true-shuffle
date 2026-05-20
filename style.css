@@ -44,35 +44,47 @@ body {
 
 .topbar {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    margin-bottom: 24px;
+    position: relative;
+    margin-bottom: 16px;
+    border-bottom: 1px solid var(--bg-primary);
+    padding-bottom: 12px;
 }
 
 .topbar h1 {
-    font-size: 24px;
+    font-size: 18px;
     font-weight: 700;
-    color: var(--text-primary);
+    color: var(--accent);
+    text-align: center;
 }
 
 .toggle-track {
-    width: 44px;
-    height: 24px;
-    border-radius: 12px;
+    width: 36px;
+    height: 20px;
+    border-radius: 10px;
     background-color: var(--text-secondary);
     position: relative;
     cursor: pointer;
+    margin-left: auto;
 }
 
 .toggle-thumb {
-    width: 18px;
-    height: 18px;
+    width: 14px;
+    height: 14px;
     border-radius: 50%;
     background-color: var(--accent);
     position: absolute;
     top: 3px;
     left: 3px;
     transition: transform 0.3s ease;
+}
+
+.theme-toggle {
+    position: absolute;
+    right: 0;
+    display: center;
+    align-items: center;
 }
 
 [data-theme="dark"] .toggle-thumb {
@@ -292,6 +304,9 @@ body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 8px;
+    border-bottom: 1px solid var(--bg-primary);
+    padding-bottom: 8px;
+    margin-bottom: 8px;
 }
 
 .screen-active {
@@ -386,7 +401,7 @@ body {
     align-items: center;
     background-color: var(--bg-primary);
     border-radius: 8px;
-    padding: 10px 12px;
+    padding: 8px 12px;
     margin-bottom: 12px;
 }
 

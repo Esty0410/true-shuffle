@@ -44,19 +44,21 @@ body {
 
 .topbar {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    position: relative;
-    margin-bottom: 16px;
-    border-bottom: 1px solid var(--bg-primary);
-    padding-bottom: 12px;
+    padding: 0 0 4px 0;
+    margin-bottom: 8px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    position: static;
 }
 
 .topbar h1 {
-    font-size: 18px;
+    font-size: 15px;
     font-weight: 700;
-    color: var(--accent);
-    text-align: center;
+    color: var(--text-primary);
+    letter-spacing: 2px;
+    text-transform: lowercase;
+    position: static;
 }
 
 .toggle-track {
@@ -81,9 +83,8 @@ body {
 }
 
 .theme-toggle {
-    position: absolute;
-    right: 0;
-    display: center;
+    position: static;
+    display: flex;
     align-items: center;
 }
 
@@ -218,6 +219,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 6px;
+    margin: 0;
 }
 
 .queue-empty {
@@ -283,7 +285,7 @@ body {
 .screen-queue {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 0;
 }
 
 .queue-header {
@@ -291,6 +293,8 @@ body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 8px;
+    margin-top: 0;
+    padding-top: 0;
 }
 
 .screen-playlists,
@@ -303,10 +307,9 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 8px;
+    margin: 0 0 4px 0;
+    padding: 0 0 4px 0;
     border-bottom: 1px solid var(--bg-primary);
-    padding-bottom: 8px;
-    margin-bottom: 8px;
 }
 
 .screen-active {
@@ -319,10 +322,10 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 10px 12px;
-    border-radius: 8px;
     background-color: var(--bg-primary);
     cursor: pointer;
     user-select: none;
+    border-radius: 8px;
 }
 
 .playlist-item {
@@ -330,10 +333,10 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 10px 12px;
-    border-radius: 8px;
     background-color: var(--bg-primary);
     cursor: pointer;
     user-select: none;
+    border-radius: 8px;
 }
 
 .playlist-item::after {
@@ -364,6 +367,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 6px;
+    margin: 0;
 }
 
 .btn-back {
@@ -396,23 +400,30 @@ body {
 }
 
 .mini-player {
+    padding: 6px 12px;
+    margin: 0 0 12px 0;
+    background-color: var(--bg-primary);
+    border-radius: 8px;
+    border-bottom: none;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: var(--bg-primary);
-    border-radius: 8px;
-    padding: 8px 12px;
-    margin-bottom: 12px;
+    margin-top: 4px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .mini-player-info {
     flex: 1;
     overflow: hidden;
     position: relative;
+    max-width: calc(100% - 48px);
 }
 
 .mini-player-info span {
-    font-size: 13px;
+    font-size: 15px;
     font-weight: 600;
     color: var(--text-primary);
     white-space: nowrap;

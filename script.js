@@ -550,5 +550,22 @@ document.getElementById('queuePanelBtn').addEventListener('click', () => {
     }
 });
 
+document.addEventListener('visibilitychange', async () => {
+    if (document.visibilityState === 'visible') {
+        const token = localStorage.getItem('access_token');
+        const response = await fetch('https://api.spotify.com/v1/me/player', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!response.ok || response.status === 204) return;
+        const data = await response.json();
+        if (data && !data.is_playing && playingQueue.length > 0) {
+            const nextIndex = currentTrackIndex + 1;
+            if (nextIndex >= playingQueue.length) return;
+            currentTrackIndex = nextIndex;
+            await playSong(playingQueue[currentTrackIndex].item, false);
+        }
+    }
+});
+
 setupSeekBar();
 handleCallback();

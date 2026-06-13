@@ -46,9 +46,9 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 0 4px 0;
+    padding: 0 0 6px 0;
     margin-bottom: 8px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    border-bottom: 1px solid var(--bg-primary);
     position: static;
 }
 
@@ -439,4 +439,33 @@ body {
 
 .mini-player-info span.scrolling {
     animation: scroll 6s linear infinite;
+}
+
+.queue-panel {
+    margin-top: 6px;
+    border-top: 1px solid var(--bg-primary);
+}
+
+.queue-panel-toggle {
+    width: 100%;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 12px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap:6px;
+}
+
+.queue-panel-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-bottom: 8px;
 }

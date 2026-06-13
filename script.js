@@ -10,6 +10,7 @@ let currentDuration = 0;
 let isDragging = false;
 let draggedIndex = null;
 let isAutoAdvancing = false;
+let playingQueue = [];
 
 setTimeout(() => {
     document.getElementById('intro').classList.add('intro-hidden');
@@ -157,8 +158,8 @@ function trueShuffle(tracks) {
     return shuffled;
 }
 
-function displayQueue(tracks) {
-    showScreen('screenQueue');
+function displayQueue(tracks, switchScreen = true) {
+    if (switchScreen) showScreen('screenQueue');
     const queueList = document.getElementById('songList');
     queueList.innerHTML = '';
 
@@ -209,10 +210,16 @@ function updatePlayButtons(playing) {
     document.getElementById('miniPlayBtn2').innerHTML = icon;
 }
 
-async function playSong(track) {
+async function playSong(track, updateQueue = true) {
     showScreen('screenNowPlaying');
 
-    currentTrackIndex = currentQueue.findIndex(item => item.item.uri === track.uri);
+    if (updateQueue) {
+        currentTrackIndex = currentQueue.findIndex(item => item.item.uri === track.uri);
+    }
+    if (updateQueue) {
+        playingQueue = [...currentQueue];
+    }
+    updateNowPlayingQueue();
 
     document.getElementById('songTitle').textContent = track.name;
     const miniTitle = document.getElementById('miniTitle');
@@ -291,12 +298,12 @@ async function updateProgressBar() {
         if (data.progress_ms >= data.item.duration_ms - 2000 && !isAutoAdvancing) {
             isAutoAdvancing = true;
             const nextIndex = currentTrackIndex + 1;
-            if (nextIndex >= currentQueue.length) {
+            if (nextIndex >= playingQueue.length) {
                 isAutoAdvancing = false;
                 return;
             }
             currentTrackIndex = nextIndex;
-            await playSong(currentQueue[currentTrackIndex].item);
+            await playSong(playingQueue[currentTrackIndex].item, false);
             isAutoAdvancing = false;
         }
     }
@@ -324,10 +331,10 @@ document.getElementById('goToNowPlaying').addEventListener('click', () => {
 document.getElementById('shuffleQueueBtn').addEventListener('click', () => {
     const currentTrack = currentQueue[currentTrackIndex];
     currentQueue = trueShuffle(currentQueue);
-    if (currentQueue) {
+    if (currentTrack) {
         currentTrackIndex = currentQueue.findIndex(item => item.item.uri === currentTrack.item.uri);
     }
-    displayQueue(currentQueue);
+    displayQueue(currentQueue, true);
 });
 
 function setupSeekBar() {
@@ -393,6 +400,34 @@ function setupSeekBar() {
     });
 }
 
+function updateNowPlayingQueue() {
+        const list = document.getElementById('nowPlayingQueue');
+        list.innerHTML = '';
+
+        playingQueue.forEach((trackItem, index) => {
+            const li = document.createElement('li');
+            li.className = 'queue-item';
+            li.innerHTML =`
+            <span>${index + 1}. ${trackItem.item.name} - ${trackItem.item.artists[0].name}</span>
+            <i class="fa-solid fa-grip-lines drag-handle"></i>
+            `;
+            li.draggable = true;
+            li.addEventListener('click', () => {
+                currentTrackIndex = index;
+                playSong(trackItem.item, false);
+            });
+            li.addEventListener('dragstart', () => { draggedIndex = index; });
+            li.addEventListener('dragover', (e) => { e.preventDefault(); });
+            li.addEventListener('drop', () => {
+                const draggedTrack = playingQueue.splice(draggedIndex, 1)[0];
+                playingQueue.splice(index, 0, draggedTrack);
+                displayQueue(playingQueue, false);
+                updateNowPlayingQueue();
+            });
+            list.appendChild(li);            
+        });
+    }
+
 const themeToggle = document.querySelector('.theme-toggle');
 const body = document.querySelector('body');
 
@@ -443,21 +478,21 @@ playBtn.addEventListener('click', async () => {
 const nextBtn = document.getElementById('nextBtn');
 
 nextBtn.addEventListener('click', async () => {
-    if (currentQueue.length === 0) return;
+    if (playingQueue.length === 0) return;
 
-    currentTrackIndex = (currentTrackIndex + 1) % currentQueue.length;
-    const nextTrack = currentQueue[currentTrackIndex].item;
-    await playSong(nextTrack);
+    currentTrackIndex = (currentTrackIndex + 1) % playingQueue.length;
+    const nextTrack = playingQueue[currentTrackIndex].item;
+    await playSong(nextTrack, false);
 });
 
 const prevBtn = document.getElementById('prevBtn');
 
 prevBtn.addEventListener('click', async () => {
-    if (currentQueue.length === 0) return;
+    if (playingQueue.length === 0) return;
 
-    currentTrackIndex = (currentTrackIndex - 1 + currentQueue.length) % currentQueue.length;
-    const prevTrack = currentQueue[currentTrackIndex].item;
-    await playSong(prevTrack);
+    currentTrackIndex = (currentTrackIndex - 1 + playingQueue.length) % playingQueue.length;
+    const prevTrack = playingQueue[currentTrackIndex].item;
+    await playSong(prevTrack, false);
 });
 
 document.getElementById('miniPlayBtn').addEventListener('click', async () => {
@@ -499,6 +534,19 @@ document.getElementById('miniPlayBtn2').addEventListener('click', async () => {
         });
         isPlaying = true;
         updatePlayButtons(true);
+    }
+});
+
+document.getElementById('queuePanelBtn').addEventListener('click', () => {
+    const list = document.getElementById('nowPlayingQueue');
+    const icon = document.querySelector('#queuePanelBtn i');
+    
+    if (list.style.display === 'none') {
+        list.style.display = 'flex';
+        icon.style.transform = 'rotate(180deg)';
+    } else {
+        list.style.display = 'none';
+        icon.style.transform = 'rotate(0deg)';
     }
 });
 

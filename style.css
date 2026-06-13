@@ -10,8 +10,12 @@
     --bg-primary: #121212;
     --bg-secondary: #1e1e1e;
     --accent: #ffe033;
-    --text-primary: #ffffff;
+    --text-primary: #e8e8e8;
     --text-secondary: #aaaaaa;
+}
+
+[data-theme="dark"] .toggle-track {
+    background-color: #444444;
 }
 
 * {
@@ -298,17 +302,22 @@ body {
 }
 
 .screen-playlists,
-.screen-queue,
-.screen-nowplaying {
+.screen-queue {
     display: none;
+}
+
+.screen-now-playing {
+    display: flex;
+    flex-direction: column;
+    padding-top: 8px;
 }
 
 .screen-nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin: 0 0 4px 0;
-    padding: 0 0 4px 0;
+    margin: 0 0 8px 0;
+    padding: 8px 0 8px 0;
     border-bottom: 1px solid var(--bg-primary);
 }
 
@@ -383,6 +392,10 @@ body {
     cursor: pointer;
     padding: 0;
     margin-bottom: 16px;
+}
+
+#backToQueue {
+    margin-top: 8px;
 }
 
 .song-info {

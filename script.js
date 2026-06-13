@@ -1,5 +1,5 @@
 const CLIENT_ID = 'bda16eba344f499ea1c7df19e8483a19';
-const REDIRECT_URI = 'http://127.0.0.1:5500/index.html';
+const REDIRECT_URI = window.location.origin + window.location.pathname;
 const SCOPES = 'playlist-read-private playlist-read-collaborative user-library-read user-modify-playback-state user-read-playback-state';
 let activeDeviceId = null;
 let currentQueue = [];
